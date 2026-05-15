@@ -2,6 +2,7 @@ package com.gameup.admin_service.service;
 
 import com.gameup.admin_service.dto.AdminRequestDTO;
 import com.gameup.admin_service.dto.AdminResponseDTO;
+import com.gameup.admin_service.exception.ResourceNotFoundException;
 import com.gameup.admin_service.model.Admin;
 import com.gameup.admin_service.repository.AdminRepository;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,16 @@ public class AdminService {
         this.adminRepository = adminRepository;
     }
 
-    // GET
+    // GET ALL
     public List<Admin> obtenerAdmins() {
         return adminRepository.findAll();
+    }
+
+    // GET BY ID
+    public Admin obtenerAdminPorId(Long id) {
+        return adminRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Admin no encontrado con id: " + id));
     }
 
     // POST
@@ -45,6 +53,11 @@ public class AdminService {
 
     // DELETE
     public void eliminarAdmin(Long id) {
-        adminRepository.deleteById(id);
+
+        Admin admin = adminRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Admin no encontrado con id: " + id));
+
+        adminRepository.delete(admin);
     }
 }

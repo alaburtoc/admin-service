@@ -18,16 +18,25 @@ public class AdminController {
         this.adminService = adminService;
     }
 
+    // GET ALL
     @GetMapping
     public List<Admin> listarAdmins() {
         return adminService.obtenerAdmins();
     }
 
+    // GET BY ID
+    @GetMapping("/{id}")
+    public Admin obtenerAdminPorId(@PathVariable Long id) {
+        return adminService.obtenerAdminPorId(id);
+    }
+
+    // POST
     @PostMapping
     public AdminResponseDTO crearAdmin(@RequestBody AdminRequestDTO dto) {
         return adminService.crearAdmin(dto);
     }
 
+    // DELETE
     @DeleteMapping("/{id}")
     public void eliminarAdmin(@PathVariable Long id) {
         adminService.eliminarAdmin(id);
