@@ -1,8 +1,7 @@
 package com.gameup.admin_service.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
-
-    public ResourceNotFoundException(String mensaje) {
-        super(mensaje);
+    public ResourceNotFoundException(String message) {
+        super(message);
     }
 }
