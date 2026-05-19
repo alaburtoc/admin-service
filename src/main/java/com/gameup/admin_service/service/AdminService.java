@@ -55,7 +55,6 @@ public class AdminService {
     public AdminResponseDTO crearAdmin(AdminRequestDTO dto) {
         log.info("Creando admin para usuario id: {}", dto.getIdUsuario());
 
-        // Validar que el usuario existe en usuario-service
         UsuarioDTO usuario;
         try {
             usuario = usuarioFeignClient.obtenerUsuarioPorId(dto.getIdUsuario());
@@ -65,7 +64,6 @@ public class AdminService {
             throw new RuntimeException("No se puede conectar con usuario-service: " + e.getMessage());
         }
 
-        // Validar que el usuario no sea ya admin
         if (adminRepository.existsByIdUsuario(dto.getIdUsuario())) {
             throw new BusinessException("El usuario con id " + dto.getIdUsuario() + " ya es administrador");
         }
@@ -133,7 +131,6 @@ public class AdminService {
         return AdminResponseDTO.builder()
                 .idAdmin(admin.getIdAdmin())
                 .idUsuario(admin.getIdUsuario())
-                .credencial(admin.getCredencial())
                 .nivelAcceso(admin.getNivelAcceso())
                 .fechaAsignacion(admin.getFechaAsignacion())
                 .activo(admin.getActivo())

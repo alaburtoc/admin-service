@@ -12,11 +12,8 @@ import java.time.LocalDate;
 public class AdminResponseDTO {
     private Long idAdmin;
     private Long idUsuario;
-    private String credencial;
     private NivelAcceso nivelAcceso;
     private LocalDate fechaAsignacion;
     private Boolean activo;
-
-    // Dato enriquecido desde usuario-service
     private String nombreUsuario;
 }
