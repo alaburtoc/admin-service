@@ -10,6 +10,7 @@ import com.gameup.admin_service.repository.AdminRepository;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class AdminService {
 
     private final AdminRepository adminRepository;
     private final UsuarioFeignClient usuarioFeignClient;
+    private final PasswordEncoder passwordEncoder;
 
     public List<AdminResponseDTO> obtenerAdmins() {
         log.info("Obteniendo todos los admins");
@@ -70,7 +72,7 @@ public class AdminService {
 
         Admin admin = Admin.builder()
                 .idUsuario(dto.getIdUsuario())
-                .credencial(dto.getCredencial())
+                .credencial(passwordEncoder.encode(dto.getCredencial()))
                 .nivelAcceso(dto.getNivelAcceso())
                 .fechaAsignacion(dto.getFechaAsignacion())
                 .activo(true)
