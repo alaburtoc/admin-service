@@ -52,6 +52,25 @@ public class AdminService {
                 .toList();
     }
 
+    public AdminResponseDTO autenticar(AdminLoginRequest request) {
+        log.info("Intentando autenticar admin con id: {}", request.getIdAdmin());
+
+        Admin admin = adminRepository.findById(request.getIdAdmin())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Admin no encontrado con id: " + request.getIdAdmin()));
+
+        if (!passwordEncoder.matches(request.getCredencial(), admin.getCredencial())) {
+            throw new BusinessException("Credencial incorrecta");
+        }
+
+        if (!admin.getActivo()) {
+            throw new BusinessException("El admin está inactivo y no puede iniciar sesión");
+        }
+
+        log.info("Admin id {} autenticado correctamente", admin.getIdAdmin());
+        return mapToResponse(admin, null);
+    }
+
     public AdminResponseDTO crearAdmin(AdminRequestDTO dto) {
         log.info("Creando admin para usuario id: {}", dto.getIdUsuario());
 
