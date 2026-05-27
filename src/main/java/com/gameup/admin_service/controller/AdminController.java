@@ -1,5 +1,6 @@
 package com.gameup.admin_service.controller;
 
+import com.gameup.admin_service.dto.AdminLoginRequest;
 import com.gameup.admin_service.dto.AdminRequestDTO;
 import com.gameup.admin_service.dto.AdminResponseDTO;
 import com.gameup.admin_service.model.NivelAcceso;
@@ -17,6 +18,24 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+
+
+
+    @PostMapping
+    public ResponseEntity<AdminResponseDTO> crearAdmin(
+            @Valid @RequestBody AdminRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(adminService.crearAdmin(dto));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody AdminLoginRequest request) {
+        AdminResponseDTO admin = adminService.autenticar(request);
+        return ResponseEntity.ok("Login exitoso. Bienvenido admin id: " + admin.getIdAdmin()
+                + " | Nivel: " + admin.getNivelAcceso());
+    }
+
+
 
     @GetMapping
     public ResponseEntity<List<AdminResponseDTO>> listarAdmins() {
@@ -37,13 +56,6 @@ public class AdminController {
     @GetMapping("/activos")
     public ResponseEntity<List<AdminResponseDTO>> obtenerActivos() {
         return ResponseEntity.ok(adminService.obtenerActivos());
-    }
-
-    @PostMapping
-    public ResponseEntity<AdminResponseDTO> crearAdmin(
-            @Valid @RequestBody AdminRequestDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(adminService.crearAdmin(dto));
     }
 
     @PatchMapping("/{id}/nivel")

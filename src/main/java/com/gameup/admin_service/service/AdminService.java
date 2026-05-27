@@ -10,6 +10,7 @@ import com.gameup.admin_service.repository.AdminRepository;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class AdminService {
 
     private final AdminRepository adminRepository;
     private final UsuarioFeignClient usuarioFeignClient;
+    private final PasswordEncoder passwordEncoder;
 
     public List<AdminResponseDTO> obtenerAdmins() {
         log.info("Obteniendo todos los admins");
@@ -50,10 +52,28 @@ public class AdminService {
                 .toList();
     }
 
+    public AdminResponseDTO autenticar(AdminLoginRequest request) {
+        log.info("Intentando autenticar admin con id: {}", request.getIdAdmin());
+
+        Admin admin = adminRepository.findById(request.getIdAdmin())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Admin no encontrado con id: " + request.getIdAdmin()));
+
+        if (!passwordEncoder.matches(request.getCredencial(), admin.getCredencial())) {
+            throw new BusinessException("Credencial incorrecta");
+        }
+
+        if (!admin.getActivo()) {
+            throw new BusinessException("El admin está inactivo y no puede iniciar sesión");
+        }
+
+        log.info("Admin id {} autenticado correctamente", admin.getIdAdmin());
+        return mapToResponse(admin, null);
+    }
+
     public AdminResponseDTO crearAdmin(AdminRequestDTO dto) {
         log.info("Creando admin para usuario id: {}", dto.getIdUsuario());
 
-        // Validar que el usuario existe en usuario-service
         UsuarioDTO usuario;
         try {
             usuario = usuarioFeignClient.obtenerUsuarioPorId(dto.getIdUsuario());
@@ -63,14 +83,13 @@ public class AdminService {
             throw new RuntimeException("No se puede conectar con usuario-service: " + e.getMessage());
         }
 
-        // Validar que el usuario no sea ya admin
         if (adminRepository.existsByIdUsuario(dto.getIdUsuario())) {
             throw new BusinessException("El usuario con id " + dto.getIdUsuario() + " ya es administrador");
         }
 
         Admin admin = Admin.builder()
                 .idUsuario(dto.getIdUsuario())
-                .credencial(dto.getCredencial())
+                .credencial(passwordEncoder.encode(dto.getCredencial()))
                 .nivelAcceso(dto.getNivelAcceso())
                 .fechaAsignacion(dto.getFechaAsignacion())
                 .activo(true)
@@ -131,7 +150,6 @@ public class AdminService {
         return AdminResponseDTO.builder()
                 .idAdmin(admin.getIdAdmin())
                 .idUsuario(admin.getIdUsuario())
-                .credencial(admin.getCredencial())
                 .nivelAcceso(admin.getNivelAcceso())
                 .fechaAsignacion(admin.getFechaAsignacion())
                 .activo(admin.getActivo())
