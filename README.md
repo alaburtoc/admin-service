@@ -1,0 +1,1 @@
+Gestión del equipo administrativo de la plataforma. Permite crear admins, autenticarlos y administrar su nivel de acceso (BAJO, MEDIO, ALTO, SUPER_ADMIN). Se comunica con usuario-service para consultar información de usuarios. Incluye la opción de desactivar admins sin eliminarlos.
