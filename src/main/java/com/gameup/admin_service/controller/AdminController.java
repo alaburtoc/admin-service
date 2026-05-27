@@ -19,7 +19,7 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    // ── Libre: no requiere login ──────────────────────────────────────────
+
 
     @PostMapping
     public ResponseEntity<AdminResponseDTO> crearAdmin(
@@ -35,7 +35,7 @@ public class AdminController {
                 + " | Nivel: " + admin.getNivelAcceso());
     }
 
-    // ── Protegidos: primero hacer POST /login ─────────────────────────────
+
 
     @GetMapping
     public ResponseEntity<List<AdminResponseDTO>> listarAdmins() {

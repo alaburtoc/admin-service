@@ -18,15 +18,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String idAdmin) throws UsernameNotFoundException {
-        // Buscamos al admin en la BD por su id
+
         Admin admin = adminRepository.findById(Long.parseLong(idAdmin))
                 .orElseThrow(() -> new UsernameNotFoundException("Admin no encontrado con id: " + idAdmin));
 
-        // Retornamos un objeto User que Spring Security pueda entender
+
         return new org.springframework.security.core.userdetails.User(
                 String.valueOf(admin.getIdAdmin()),
                 admin.getCredencial(),
-                Collections.emptyList() // Lista de roles vacía por ahora
+                Collections.emptyList()
         );
     }
 }

@@ -21,13 +21,13 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Verificamos si la tabla ya tiene datos para no duplicar
+
         if (adminRepository.count() > 0) {
             log.info(">>> Admins ya cargados. Se omite la inicialización.");
             return;
         }
 
-        // Admin 1 - nivel SUPER_ADMIN, asociado al usuario con id 1
+
         Admin admin1 = new Admin();
         admin1.setIdUsuario(1L);
         admin1.setCredencial(passwordEncoder.encode("superadmin123"));
@@ -35,7 +35,7 @@ public class DataInitializer implements CommandLineRunner {
         admin1.setFechaAsignacion(LocalDate.of(2024, 1, 15));
         admin1.setActivo(true);
 
-        // Admin 2 - nivel ALTO, asociado al usuario con id 2
+
         Admin admin2 = new Admin();
         admin2.setIdUsuario(2L);
         admin2.setCredencial(passwordEncoder.encode("adminAlto456"));
@@ -43,7 +43,7 @@ public class DataInitializer implements CommandLineRunner {
         admin2.setFechaAsignacion(LocalDate.of(2024, 3, 10));
         admin2.setActivo(true);
 
-        // Admin 3 - nivel MEDIO, asociado al usuario con id 3
+
         Admin admin3 = new Admin();
         admin3.setIdUsuario(3L);
         admin3.setCredencial(passwordEncoder.encode("adminMedio789"));
